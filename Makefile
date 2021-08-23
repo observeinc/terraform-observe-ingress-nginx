@@ -22,4 +22,3 @@ s3:
 
 outputs:
 	grep "resource \"observe_dataset\"" *.tf | cut -d' ' -f3 | awk '{gsub(/"/, "", $$0); print "output \""$$0"\" {\n  value = observe_dataset."$$0"\n}\n"}' > outputs.tf
-	grep "resource \"observe_dataset\"" *.tf | cut -d' ' -f3 | awk '{gsub(/"/, "", $$0); print "output \""$$0"\" {\n  value = lookup(data.observe_dataset.aws, \""$$0"\", null)\n}\n"}' > readonly/outputs.tf
