@@ -21,11 +21,11 @@ resource "observe_dataset" "ingress_logs" {
     for_each = local.latest_version ? [1] : []
     content {
       pipeline = <<-EOF
-        colregex log,
+        extract_regex log,
           /^(?P<remote_addr>\S*) - (?P<remote_user>\S*) \[(?P<time_local>[^\]]*)\] "(?P<request>[^"]*)" (?P<status>\S*) (?P<body_bytes_sent>\S*) "(?P<http_referer>[^"]*)" "(?P<http_user_agent>[^"]*)" (?P<request_length>\S*) (?P<request_time>\S*) \[(?P<proxy_upstream_name>[^\]]*)\] \[(?P<proxy_alternative_upstream_name>[^\]]*)\] (?P<upstream_addr>\S*) (?P<upstream_response_length>\S*) (?P<upstream_response_time>\S*) (?P<upstream_status>\S*) (?P<req_id>\S*)(?P<remainder>.*)/
 
-        colregex request, /(?P<method>\S+)\s?(?P<path>\S+?)\s?(?P<protocol>\S+?)/
-        colpick
+        extract_regex request, /(?P<method>\S+)\s?(?P<path>\S+?)\s?(?P<protocol>\S+?)/
+        pick_col
           timestamp,
           remote_addr:case(remote_addr = "-" or remote_addr = "", string_null(), true, remote_addr),
           remote_user:case(remote_user = "-" or remote_user = "", string_null(), true, remote_user),
@@ -58,11 +58,11 @@ resource "observe_dataset" "ingress_logs" {
     for_each = local.legacy_version ? [1] : []
     content {
       pipeline = <<-EOF
-        colregex log,
+        extract_regex log,
           /^(?P<remote_addr>\S*) - \[(?P<the_real_ip>[^\]]*)\] - (?P<remote_user>\S*) \[(?P<time_local>[^\]]*)\] "(?P<request>[^"]*)" (?P<status>\S*) (?P<body_bytes_sent>\S*) "(?P<http_referer>[^"]*)" "(?P<http_user_agent>[^"]*)" (?P<request_length>\S*) (?P<request_time>\S*) \[(?P<proxy_upstream_name>[^\]]*)\] (?P<upstream_addr>\S*) (?P<upstream_response_length>\S*) (?P<upstream_response_time>\S*) (?P<upstream_status>\S*) (?P<req_id>\S*)(?P<remainder>.*)?/
 
-        colregex request, /(?P<method>\S+)\s?(?P<path>\S+?)\s?(?P<protocol>\S+?)/
-        colpick
+        extract_regex request, /(?P<method>\S+)\s?(?P<path>\S+?)\s?(?P<protocol>\S+?)/
+        pick_col
           timestamp,
           remote_addr:case(remote_addr = "-" or remote_addr = "", string_null(), true, remote_addr),
           the_real_ip:case(the_real_ip = "-" or the_real_ip = "", string_null(), true, the_real_ip),
@@ -95,18 +95,18 @@ resource "observe_dataset" "ingress_logs" {
     pipeline = <<-EOF
       // TODO: upstream_addr is actually a comma-separated list of addresses, we only use last one
       // TODO: path of domain socket, ipv6
-      colmake upstreams:split(upstream_addr, ",") 
+      make_col upstreams:split(upstream_addr, ",")
 
-      colmake request:split(request, " ")
-      colmake protocol:string(request[2])
-      colmake path:parseurl(strcat("http://localhost", decode_uri_component(string(request[1]))))
-      colmake path:strcat("/", string(path.path)), parameters:object(path.parameters)
-      colmake method:string(request[0])
-      coldrop request
+      make_col request:split(request, " ")
+      make_col protocol:string(request[2])
+      make_col path:parseurl(strcat("http://localhost", decode_uri_component(string(request[1]))))
+      make_col path:strcat("/", string(path.path)), parameters:object(path.parameters)
+      make_col method:string(request[0])
+      drop_col request
 
-      colregex string(upstreams[0]), /^(?P<upstream_ip>([0-9]{1,3}\.){3}[0-9]{1,3}):(?P<upstream_port>\d+)$/
-      colmake upstream_protocol:case(not isnull(upstream_ip), "TCP"), upstream_port:int64(upstream_port)
-      coldrop upstreams
+      extract_regex string(upstreams[0]), /^(?P<upstream_ip>([0-9]{1,3}\.){3}[0-9]{1,3}):(?P<upstream_port>\d+)$/
+      make_col upstream_protocol:case(not isnull(upstream_ip), "TCP"), upstream_port:int64(upstream_port)
+      drop_col upstreams
 
       colshow log:false, time_local:false, remainder:false
       colenum status:true, upstream_status:true
