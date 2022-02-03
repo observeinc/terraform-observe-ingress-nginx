@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v0.1.0"></a>
+## [v0.1.0] - 2022-02-03
+
+- fix: update version constraints
+- fix: adjust .chglog config
+- fix: rename deprecated OPAL
+
+
 <a name="v0.0.2"></a>
 ## [v0.0.2] - 2021-08-23
 
@@ -21,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - First commit.
 
 
-[Unreleased]: https://github.com/observeinc/terraform-observe-kubernetes/compare/v0.0.2...HEAD
-[v0.0.2]: https://github.com/observeinc/terraform-observe-kubernetes/compare/v0.0.1...v0.0.2
+[Unreleased]: https://github.com/observeinc/terraform-observe-ingress-nginx/compare/v0.1.0...HEAD
+[v0.1.0]: https://github.com/observeinc/terraform-observe-ingress-nginx/compare/v0.0.2...v0.1.0
+[v0.0.2]: https://github.com/observeinc/terraform-observe-ingress-nginx/compare/v0.0.1...v0.0.2
 
