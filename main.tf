@@ -30,7 +30,9 @@ resource "observe_dataset" "ingress_logs" {
           remote_addr:case(remote_addr = "-" or remote_addr = "", string_null(), true, remote_addr),
           remote_user:case(remote_user = "-" or remote_user = "", string_null(), true, remote_user),
           time_local:case(time_local = "-" or time_local = "", string_null(), true, time_local),
-          request,
+          method,
+          path,
+          protocol,
           status:int64(status),
           body_bytes_sent:int64(body_bytes_sent),
           http_referer:case(http_referer = "-" or http_referer = "", string_null(), true, http_referer),
@@ -49,7 +51,8 @@ resource "observe_dataset" "ingress_logs" {
           podName,
           containerName,
           remainder,
-          log
+          log,
+          request
       EOF
     }
   }
@@ -68,7 +71,9 @@ resource "observe_dataset" "ingress_logs" {
           the_real_ip:case(the_real_ip = "-" or the_real_ip = "", string_null(), true, the_real_ip),
           remote_user:case(remote_user = "-" or remote_user = "", string_null(), true, remote_user),
           time_local:case(time_local = "-" or time_local = "", string_null(), true, time_local),
-          request,
+          method,
+          path,
+          protocol,
           status:int64(status),
           body_bytes_sent:int64(body_bytes_sent),
           http_referer:case(http_referer = "-" or http_referer = "", string_null(), true, http_referer),
@@ -86,6 +91,7 @@ resource "observe_dataset" "ingress_logs" {
           podName,
           containerName,
           log,
+          request,
           remainder
       EOF
     }
