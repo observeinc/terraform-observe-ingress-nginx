@@ -6,6 +6,7 @@ locals {
 resource "observe_dataset" "ingress_logs" {
   workspace = var.workspace.oid
   name      = format(var.name_format, "Ingress Logs")
+  freshness = var.freshness_default
 
   inputs = {
     "container_logs" = var.kubernetes.container_logs.oid

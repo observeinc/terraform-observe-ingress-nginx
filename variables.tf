@@ -8,7 +8,11 @@ variable "name_format" {
   description = "Format string to use for dataset names. Override to introduce a prefix or suffix."
   default     = "%s"
 }
-
+variable "freshness_default" {
+  type        = string
+  description = "Default dataset freshness. Can be overridden with freshness input"
+  default     = "1m"
+}
 variable "container_name" {
   type        = string
   description = "Filter expression on container logs."
