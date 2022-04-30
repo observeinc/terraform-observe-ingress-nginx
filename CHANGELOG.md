@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 
 
 
+<a name="v0.1.1"></a>
+## [v0.1.1] - 2022-04-29
+
+- chore: bump changelog
+- fix: mw added freshness to ingres dataset
+
+
 <a name="v0.1.0"></a>
 ## [v0.1.0] - 2022-02-03
 
@@ -29,7 +36,8 @@ All notable changes to this project will be documented in this file.
 - First commit.
 
 
-[Unreleased]: https://github.com/observeinc/terraform-observe-ingress-nginx/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/observeinc/terraform-observe-ingress-nginx/compare/v0.1.1...HEAD
+[v0.1.1]: https://github.com/observeinc/terraform-observe-ingress-nginx/compare/v0.1.0...v0.1.1
 [v0.1.0]: https://github.com/observeinc/terraform-observe-ingress-nginx/compare/v0.0.2...v0.1.0
 [v0.0.2]: https://github.com/observeinc/terraform-observe-ingress-nginx/compare/v0.0.1...v0.0.2
 
