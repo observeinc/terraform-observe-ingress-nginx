@@ -93,7 +93,7 @@ module "ingress_nginx" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_observe"></a> [observe](#provider\_observe) | 0.4.12 |
+| <a name="provider_observe"></a> [observe](#provider\_observe) | 0.6.0 |
 
 ## Modules
 
@@ -111,6 +111,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_container_name"></a> [container\_name](#input\_container\_name) | Filter expression on container logs. | `string` | `"nginx-ingress-controller"` | no |
+| <a name="input_freshness_default"></a> [freshness\_default](#input\_freshness\_default) | Default dataset freshness. Can be overridden with freshness input | `string` | `"1m"` | no |
 | <a name="input_kubernetes"></a> [kubernetes](#input\_kubernetes) | Kubernetes module. | <pre>object({<br>    container_logs = object({ oid = string })<br>    endpoint       = object({ oid = string })<br>  })</pre> | n/a | yes |
 | <a name="input_link_targets"></a> [link\_targets](#input\_link\_targets) | Datasets to link to. | <pre>map(object({<br>    target = string<br>    fields = list(string)<br>  }))</pre> | `{}` | no |
 | <a name="input_log_format"></a> [log\_format](#input\_log\_format) | Log format version. | `string` | `"latest"` | no |
