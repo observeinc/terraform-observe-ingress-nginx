@@ -3,7 +3,7 @@
 TMP:=.test.zip
 LEGACY_BUCKET:=observeinc
 BUCKET:=observeinc-terraform-registry
-TAG?=$(shell git describe --tags)
+TAG?=$(shell git describe --tags --always)
 REPO:=$(notdir $(shell pwd))
 MODULE_NAMESPACE:=observeinc
 MODULE_NAME:=$(subst terraform-observe-,,$(REPO))
