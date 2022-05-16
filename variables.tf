@@ -41,6 +41,11 @@ variable "kubernetes" {
   type = object({
     container_logs = object({ oid = string })
     endpoint       = object({ oid = string })
+    kubelet_metrics = object({ oid = string })
+    ingress         = object({ id = string, oid = string })
+    api_update      = object({ oid = string })
+    cluster         = object({ id = string })
+    namespace       = object({ id = string })
   })
   description = "Kubernetes module."
 }

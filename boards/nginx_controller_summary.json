@@ -1,0 +1,786 @@
+{
+  "sections": [
+    {
+      "card": {
+        "cardType": "section",
+        "closed": false,
+        "title": "Summary"
+      },
+      "items": [
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Cluster",
+            "visualization": {
+              "config": {
+                "innerRadius": 0.6,
+                "legend": {
+                  "placement": "right",
+                  "type": "list",
+                  "visible": true
+                },
+                "type": "arc"
+              },
+              "source": {
+                "stat": {
+                  "link": {
+                    "dstFields": [
+                      "uid"
+                    ],
+                    "label": "Cluster",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_cluster",
+                    "targetLabelField": "name",
+                    "type": "linked"
+                  }
+                },
+                "type": "stats"
+              },
+              "type": "circular"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Namespace",
+            "visualization": {
+              "config": {
+                "innerRadius": 0.6,
+                "legend": {
+                  "placement": "right",
+                  "type": "list",
+                  "visible": true
+                },
+                "type": "arc"
+              },
+              "source": {
+                "stat": {
+                  "link": {
+                    "dstFields": [
+                      "clusterUid",
+                      "name"
+                    ],
+                    "label": "Namespace",
+                    "srcFields": [
+                      "clusterUid",
+                      "namespace"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_namespace",
+                    "targetLabelField": "name",
+                    "type": "linked"
+                  }
+                },
+                "type": "stats"
+              },
+              "type": "circular"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 8,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "name",
+            "visualization": {
+              "config": {
+                "innerRadius": 0.6,
+                "legend": {
+                  "placement": "right",
+                  "type": "list",
+                  "visible": true
+                },
+                "type": "arc"
+              },
+              "source": {
+                "stat": {
+                  "fieldId": "name"
+                },
+                "type": "stats"
+              },
+              "type": "circular"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 4,
+            "y": 0
+          }
+        }
+      ]
+    },
+    {
+      "card": {
+        "cardType": "section",
+        "closed": false,
+        "title": "CONNECTION/REQUESTS"
+      },
+      "items": [
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "nginx_ingress_controller_check_success",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "colorConfigType": "Color",
+                "fieldConfig": {
+                  "visible": false
+                },
+                "thresholds": null,
+                "type": "singlefield"
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "sum",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_check_success"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_check_success",
+                  "rollup": "max",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "singlevalue"
+            }
+          },
+          "layout": {
+            "w": 2,
+            "h": 8,
+            "x": 10,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Connections",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": false
+                },
+                "yConfig": {
+                  "unit": "",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "sum",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "state"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_nginx_process_connections"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_nginx_process_connections",
+                  "rollup": "avg",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 6,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "nginx_ingress_controller_config_last_reload_successful",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "colorConfigType": "Color",
+                "fieldConfig": {
+                  "visible": false
+                },
+                "thresholds": null,
+                "type": "singlefield"
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "min",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_config_last_reload_successful"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_config_last_reload_successful",
+                  "rollup": "min",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "singlevalue"
+            }
+          },
+          "layout": {
+            "w": 2,
+            "h": 16,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Total Connections",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": true
+                },
+                "yConfig": {
+                  "unit": "",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "sum",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "state"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_nginx_process_connections_total"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_nginx_process_connections_total",
+                  "rollup": "rate",
+                  "type": "cumulativeCounter",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 2,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "nginx_ingress_controller_check_errors",
+            "visualization": {
+              "config": {
+                "color": "Red",
+                "colorConfigType": "Color",
+                "fieldConfig": {
+                  "visible": false
+                },
+                "thresholds": null,
+                "type": "singlefield"
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "sum",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    [
+                      "clusterUid"
+                    ]
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_check_errors"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_check_errors",
+                  "rollup": "max",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "singlevalue"
+            }
+          },
+          "layout": {
+            "w": 2,
+            "h": 8,
+            "x": 10,
+            "y": 6
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "nginx_ingress_controller_requests",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": false
+                },
+                "yConfig": {
+                  "unit": "",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "sum",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "status"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_requests"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_requests",
+                  "rollup": "rate",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 6,
+            "y": 6
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Total Requests",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": false
+                },
+                "yConfig": {
+                  "unit": "",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "sum",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_nginx_process_requests_total"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_nginx_process_requests_total",
+                  "rollup": "rate",
+                  "type": "cumulativeCounter",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 2,
+            "y": 6
+          }
+        }
+      ]
+    },
+    {
+      "card": {
+        "cardType": "section",
+        "closed": false,
+        "title": "CPU/MEMORY"
+      },
+      "items": [
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "VIRITUAL MEMORY",
+            "visualization": {
+              "config": {
+                "color": "Blue",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": false
+                },
+                "yConfig": {
+                  "unit": "bytes",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "avg",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "clusterUid"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_nginx_process_virtual_memory_bytes"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_nginx_process_virtual_memory_bytes",
+                  "rollup": "avg",
+                  "type": "gauge",
+                  "unit": "bytes",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "RESIDENT MEMORY",
+            "visualization": {
+              "config": {
+                "color": "Blue",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": false
+                },
+                "yConfig": {
+                  "unit": "bytes",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "sum",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "clusterUid"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_nginx_process_resident_memory_bytes"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_nginx_process_resident_memory_bytes",
+                  "rollup": "avg",
+                  "type": "gauge",
+                  "unit": "bytes",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 4,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "nginx_ingress_controller_nginx_process_cpu_seconds_total",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": false
+                },
+                "yConfig": {
+                  "unit": "seconds",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "sum",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "clusterUid"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_nginx_process_cpu_seconds_total"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid"
+                    ],
+                    "label": "Controller",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_nginx-ingress_nginxIngressController",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_nginx_process_cpu_seconds_total",
+                  "rollup": "rate",
+                  "type": "cumulativeCounter",
+                  "unit": "seconds",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "w": 4,
+            "h": 8,
+            "x": 8,
+            "y": 0
+          }
+        }
+      ]
+    }
+  ],
+  "bindings": {
+    "dataset_kubernetes_cluster": "${dataset_kubernetes_cluster}",
+    "dataset_kubernetes_namespace": "${dataset_kubernetes_namespace}",
+    "dataset_nginx-ingress_nginxIngressMetrics": "${dataset_nginx-ingress_nginxIngressMetrics}",
+    "dataset_nginx-ingress_nginxIngressController": "${dataset_nginx-ingress_nginxIngressController}"
+  }
+}

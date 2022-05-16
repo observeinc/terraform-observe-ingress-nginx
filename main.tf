@@ -133,7 +133,142 @@ resource "observe_link" "ingress_logs" {
     "Endpoint" = {
       target = var.kubernetes.endpoint.oid
       fields = ["upstream_ip:ip", "upstream_port:port", "upstream_protocol:protocol", "clusterUid"]
-    },
+    }
     }, var.link_targets
   )
+}
+
+resource "observe_dataset" "nginx_ingress_metrics" {
+  workspace = var.workspace.oid
+  name      = format(var.name_format, "Nginx Ingress Metrics")
+  freshness = var.freshness_default
+
+  inputs = {
+    "observation_dataset" = var.kubernetes.kubelet_metrics.oid
+  }
+
+  stage {
+    pipeline = <<-EOF
+      filter contains(field, "nginx")
+
+      // we need these columns to link to ingress resources
+      make_col ingress:string(tags.ingress),
+        namespace:string(tags.namespace),
+        ingress_namespace:if(is_null(tags.exported_namespace), string(tags.namespace), string(tags.exported_namespace))
+
+      pick_col timestamp,
+        name,
+          field,
+          value,
+          clusterUid,
+          tags,
+          ingress,
+          namespace,
+          ingress_namespace,
+          pod:string(tags.pod),
+          state:string(tags.state),
+          status:string(tags.status)
+          
+
+      interface "metric", metric:field, value:value
+    EOF
+  }
+}
+
+resource "observe_dataset" "nginx_ingress_controller_resources" {
+  workspace = var.workspace.oid
+  name      = format(var.name_format, "Nginx Ingress Controller")
+  freshness = var.freshness_default
+
+  inputs = {
+    "api_update" = var.kubernetes.api_update.oid
+  }
+
+  stage {
+    pipeline = <<-EOF
+      filter starts_with(apiVersion, "networking.k8s.io") and (kind = "IngressClass") and object.spec.controller = "k8s.io/ingress-nginx"
+
+      make_resource options(expiry:duration_hr(1)),
+          object,
+          namespace,
+          primary_key(name, clusterUid)
+      
+      add_key namespace, clusterUid
+          
+      // TODO: Figure out multiple ingresses
+      // add_key name, clusterUid, namespace
+    EOF
+  }
+}
+
+
+
+resource "observe_link" "ingress_metrics_link" {
+    workspace = var.workspace.oid
+    source    = observe_dataset.nginx_ingress_metrics.oid
+    target    = each.value.target
+    fields    = each.value.fields
+    label     = each.key
+
+    for_each = merge({
+      "Ingress" = {
+        target = var.kubernetes.ingress.oid
+        fields = ["ingress:name", "ingress_namespace:namespace", "clusterUid"]
+      },
+      "Controller" = {
+        target = observe_dataset.nginx_ingress_controller_resources.oid
+        fields = ["clusterUid", "namespace"]
+      }
+      }, var.link_targets
+    )
+}
+
+resource "observe_link" "ingress_resources_link" {
+    workspace = var.workspace.oid
+    source    = var.kubernetes.ingress.oid
+    target    = each.value.target
+    fields    = each.value.fields
+    label     = each.key
+
+    for_each = merge({
+      "Ingress" = {
+        target = observe_dataset.nginx_ingress_controller_resources.oid
+        fields = ["ingressClassName:name", "clusterUid"]
+      }
+      }, var.link_targets
+    )
+}
+
+resource "observe_board" "ingress_nginx_board" {
+  dataset = var.kubernetes.ingress.oid
+  name = "NGINX Ingress Metrics"
+  type = "set"
+  json = templatefile("${path.module}/boards/nginx_ingress_metrics.json", {
+    dataset_nginx-ingress_nginxIngressMetrics = observe_dataset.nginx_ingress_metrics.id
+    dataset_kubernetes_ingress = var.kubernetes.ingress.id
+    dataset_kubernetes_cluster = var.kubernetes.cluster.id
+    dataset_kubernetes_namespace = var.kubernetes.namespace.id
+  })
+}
+
+resource "observe_board" "ingress_controller_requests_nginx_board" {
+  dataset = observe_dataset.nginx_ingress_controller_resources.oid
+  name = "Request/Response Metrics"
+  type = "set"
+  json = templatefile("${path.module}/boards/nginx_controller_request.json", {
+    dataset_nginx-ingress_nginxIngressMetrics = observe_dataset.nginx_ingress_metrics.id
+    dataset_nginx-ingress_nginxIngressController = observe_dataset.nginx_ingress_controller_resources.id
+  })
+}
+
+resource "observe_board" "ingress_controller_summary_nginx_board" {
+  dataset = observe_dataset.nginx_ingress_controller_resources.oid
+  name = "Controller Summarys"
+  type = "set"
+  json = templatefile("${path.module}/boards/nginx_controller_summary.json", {
+    dataset_kubernetes_cluster = var.kubernetes.cluster.id
+    dataset_kubernetes_namespace = var.kubernetes.namespace.id
+    dataset_nginx-ingress_nginxIngressMetrics = observe_dataset.nginx_ingress_metrics.id
+    dataset_nginx-ingress_nginxIngressController = observe_dataset.nginx_ingress_controller_resources.id
+  })
 }
