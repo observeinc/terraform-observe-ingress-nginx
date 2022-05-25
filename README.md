@@ -93,7 +93,7 @@ module "ingress_nginx" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_observe"></a> [observe](#provider\_observe) | 0.6.0 |
+| <a name="provider_observe"></a> [observe](#provider\_observe) | > 0.4.0 |
 
 ## Modules
 
