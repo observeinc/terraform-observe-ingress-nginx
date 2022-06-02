@@ -36,14 +36,32 @@ variable "pipeline_custom" {
   default     = null
 }
 
+variable "enable_nginx_ingress_metrics" {
+  type        = bool
+  description = "Flag to enable or disable nginx ingress metrics."
+  default     = true
+}
+
 
 variable "kubernetes" {
   type = object({
     container_logs = object({ oid = string })
     endpoint       = object({ oid = string })
+    ingress        = object({ oid = string })
+    pod            = object({ oid = string })
+    namespace      = object({ oid = string })
+    cluster        = object({ oid = string })
   })
   description = "Kubernetes module."
 }
+
+variable "pod_metrics" {
+  type = object({
+    metrics = object({ oid = string })
+  })
+  description = "Prometheus pod metrics module."
+}
+
 
 variable "link_targets" {
   description = "Datasets to link to."

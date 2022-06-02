@@ -103,20 +103,26 @@ No modules.
 
 | Name | Type |
 |------|------|
+| observe_board.ingress | resource |
+| observe_board.pod | resource |
 | observe_dataset.ingress_logs | resource |
+| observe_dataset.metrics | resource |
 | observe_link.ingress_logs | resource |
+| observe_link.metrics | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_container_name"></a> [container\_name](#input\_container\_name) | Filter expression on container logs. | `string` | `"nginx-ingress-controller"` | no |
+| <a name="input_enable_nginx_ingress_metrics"></a> [enable\_nginx\_ingress\_metrics](#input\_enable\_nginx\_ingress\_metrics) | Flag to enable or disable nginx ingress metrics. | `bool` | `true` | no |
 | <a name="input_freshness_default"></a> [freshness\_default](#input\_freshness\_default) | Default dataset freshness. Can be overridden with freshness input | `string` | `"1m"` | no |
-| <a name="input_kubernetes"></a> [kubernetes](#input\_kubernetes) | Kubernetes module. | <pre>object({<br>    container_logs = object({ oid = string })<br>    endpoint       = object({ oid = string })<br>  })</pre> | n/a | yes |
+| <a name="input_kubernetes"></a> [kubernetes](#input\_kubernetes) | Kubernetes module. | <pre>object({<br>    container_logs = object({ oid = string })<br>    endpoint       = object({ oid = string })<br>    ingress        = object({ oid = string })<br>    pod            = object({ oid = string })<br>    namespace      = object({ oid = string })<br>    cluster        = object({ oid = string })<br>  })</pre> | n/a | yes |
 | <a name="input_link_targets"></a> [link\_targets](#input\_link\_targets) | Datasets to link to. | <pre>map(object({<br>    target = string<br>    fields = list(string)<br>  }))</pre> | `{}` | no |
 | <a name="input_log_format"></a> [log\_format](#input\_log\_format) | Log format version. | `string` | `"latest"` | no |
 | <a name="input_name_format"></a> [name\_format](#input\_name\_format) | Format string to use for dataset names. Override to introduce a prefix or suffix. | `string` | `"%s"` | no |
 | <a name="input_pipeline_custom"></a> [pipeline\_custom](#input\_pipeline\_custom) | Pipeline to parse additional data appended to log lines, surfaced in the `remainder` field. | `string` | `null` | no |
+| <a name="input_pod_metrics"></a> [pod\_metrics](#input\_pod\_metrics) | Prometheus pod metrics module. | <pre>object({<br>    metrics = object({ oid = string })<br>  })</pre> | n/a | yes |
 | <a name="input_workspace"></a> [workspace](#input\_workspace) | Workspace to apply module to. | `object({ oid = string })` | n/a | yes |
 
 ## Outputs
