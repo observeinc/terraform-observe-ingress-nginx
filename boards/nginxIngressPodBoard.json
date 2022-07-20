@@ -1,0 +1,650 @@
+{
+  "bindings": {
+    "dataset_kubernetes_cluster": "${dataset_kubernetes_cluster}",
+    "dataset_kubernetes_namespace": "${dataset_kubernetes_namespace}",
+    "dataset_kubernetes_pod": "${dataset_kubernetes_pod}",
+    "dataset_nginx-ingress_nginxIngressMetrics": "${dataset_nginx-ingress_nginxIngressMetrics}",
+    "dataset_prometheus_podMetrics": "${dataset_prometheus_podMetrics}"
+  },
+  "sections": [
+    {
+      "card": {
+        "cardType": "section",
+        "closed": false,
+        "title": "OVERVIEW"
+      },
+      "items": [
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Cluster",
+            "visualization": {
+              "config": {
+                "innerRadius": 0.6,
+                "legend": {
+                  "placement": "right",
+                  "type": "list",
+                  "visible": true
+                },
+                "type": "arc"
+              },
+              "source": {
+                "stat": {
+                  "link": {
+                    "dstFields": [
+                      "uid"
+                    ],
+                    "label": "Cluster",
+                    "srcFields": [
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_cluster",
+                    "targetLabelField": "name",
+                    "type": "linked"
+                  }
+                },
+                "type": "stats"
+              },
+              "type": "circular"
+            }
+          },
+          "layout": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Namespace",
+            "visualization": {
+              "config": {
+                "innerRadius": 0.6,
+                "legend": {
+                  "placement": "right",
+                  "type": "list",
+                  "visible": true
+                },
+                "type": "arc"
+              },
+              "source": {
+                "stat": {
+                  "link": {
+                    "dstFields": [
+                      "clusterUid",
+                      "name"
+                    ],
+                    "label": "Namespace",
+                    "srcFields": [
+                      "clusterUid",
+                      "namespace"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_namespace",
+                    "targetLabelField": "name",
+                    "type": "linked"
+                  }
+                },
+                "type": "stats"
+              },
+              "type": "circular"
+            }
+          },
+          "layout": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 0
+          }
+        }
+      ]
+    },
+    {
+      "card": {
+        "cardType": "section",
+        "closed": false,
+        "title": "MONITORING"
+      },
+      "items": [
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "0=failed,1=succeeded",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "colorConfigType": "Color",
+                "fieldConfig": {
+                  "visible": false
+                },
+                "singleStatLabel": "0=failed,1=succeeded",
+                "thresholds": null,
+                "type": "singlefield"
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "min",
+                  "datasetId": "$dataset_prometheus_podMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "clusterUid",
+                    "namespace",
+                    "pod"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_prometheus_podMetrics",
+                    "name": "nginx_ingress_controller_config_last_reload_successful"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "clusterUid",
+                      "namespace",
+                      "name"
+                    ],
+                    "label": "Pod",
+                    "srcFields": [
+                      "clusterUid",
+                      "namespace",
+                      "pod"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_pod",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_config_last_reload_successful",
+                  "rollup": "min",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "singlevalue"
+            }
+          },
+          "layout": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "nginx_ingress_controller_check_errors",
+            "visualization": {
+              "config": {
+                "color": "Red",
+                "colorConfigType": "Color",
+                "fieldConfig": {
+                  "visible": false
+                },
+                "singleStatLabel": "Total",
+                "thresholds": null,
+                "type": "singlefield"
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "max",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "controller_pod",
+                    "controller_namespace",
+                    "clusterUid"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_check_errors"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "name",
+                      "namespace",
+                      "clusterUid"
+                    ],
+                    "label": "Pod",
+                    "srcFields": [
+                      "controller_pod",
+                      "controller_namespace",
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_pod",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_check_errors",
+                  "rollup": "max",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "singlevalue"
+            }
+          },
+          "layout": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Upstream Latency",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": true
+                },
+                "yConfig": {
+                  "unit": "seconds",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "avg",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "controller_pod",
+                    "controller_namespace",
+                    "clusterUid"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_response_upstream_latency_per_request"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "name",
+                      "namespace",
+                      "clusterUid"
+                    ],
+                    "label": "Pod",
+                    "srcFields": [
+                      "controller_pod",
+                      "controller_namespace",
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_pod",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_response_upstream_latency_per_request",
+                  "rollup": "avg",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "h": 15,
+            "w": 4,
+            "x": 0,
+            "y": 6
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Request Latency",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": true
+                },
+                "yConfig": {
+                  "unit": "seconds",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "avg",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "controller_pod",
+                    "controller_namespace",
+                    "clusterUid"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_request_latency_per_request"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "name",
+                      "namespace",
+                      "clusterUid"
+                    ],
+                    "label": "Pod",
+                    "srcFields": [
+                      "controller_pod",
+                      "controller_namespace",
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_pod",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_request_latency_per_request",
+                  "rollup": "avg",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "h": 15,
+            "w": 4,
+            "x": 8,
+            "y": 6
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Response Latency",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": true
+                },
+                "yConfig": {
+                  "unit": "seconds",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "avg",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    "controller_pod",
+                    "controller_namespace",
+                    "clusterUid"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_response_latency_per_request"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "name",
+                      "namespace",
+                      "clusterUid"
+                    ],
+                    "label": "Pod",
+                    "srcFields": [
+                      "controller_pod",
+                      "controller_namespace",
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_pod",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_response_latency_per_request",
+                  "rollup": "avg",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "h": 15,
+            "w": 4,
+            "x": 4,
+            "y": 6
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Requests",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": true
+                },
+                "yConfig": {
+                  "unit": "connections/sec",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "avg",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    [
+                      "controller_pod",
+                      "controller_namespace",
+                      "clusterUid"
+                    ],
+                    [
+                      "ingress",
+                      "exported_namespace",
+                      "clusterUid"
+                    ]
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_requests"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "name",
+                      "namespace",
+                      "clusterUid"
+                    ],
+                    "label": "Pod",
+                    "srcFields": [
+                      "controller_pod",
+                      "controller_namespace",
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_pod",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_requests",
+                  "rollup": "rate",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "h": 15,
+            "w": 6,
+            "x": 0,
+            "y": 21
+          }
+        },
+        {
+          "card": {
+            "cardType": "datavis",
+            "title": "Connections",
+            "visualization": {
+              "config": {
+                "color": "Default",
+                "hideGridLines": true,
+                "legend": {
+                  "placement": "right",
+                  "type": "list"
+                },
+                "type": "xy",
+                "xConfig": {
+                  "visible": false
+                },
+                "yConfig": {
+                  "unit": "",
+                  "visible": true
+                }
+              },
+              "source": {
+                "metric": {
+                  "aggregate": "avg",
+                  "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                  "description": "Auto Detected Metric",
+                  "groupBy": [
+                    [
+                      "controller_pod",
+                      "controller_namespace",
+                      "clusterUid"
+                    ],
+                    "state"
+                  ],
+                  "heuristics": null,
+                  "id": {
+                    "datasetId": "$dataset_nginx-ingress_nginxIngressMetrics",
+                    "name": "nginx_ingress_controller_nginx_process_connections"
+                  },
+                  "interval": null,
+                  "link": {
+                    "__typename": "ForeignKey",
+                    "dstFields": [
+                      "name",
+                      "namespace",
+                      "clusterUid"
+                    ],
+                    "label": "Pod",
+                    "srcFields": [
+                      "controller_pod",
+                      "controller_namespace",
+                      "clusterUid"
+                    ],
+                    "targetDataset": "$dataset_kubernetes_pod",
+                    "targetStageLabel": null,
+                    "type": "foreign"
+                  },
+                  "name": "nginx_ingress_controller_nginx_process_connections",
+                  "rollup": "avg",
+                  "type": "gauge",
+                  "unit": "",
+                  "userDefined": false
+                },
+                "type": "metric"
+              },
+              "type": "timeseries"
+            }
+          },
+          "layout": {
+            "h": 15,
+            "w": 6,
+            "x": 6,
+            "y": 21
+          }
+        }
+      ]
+    },
+    {
+      "card": {
+        "cardType": "section",
+        "closed": false,
+        "title": "DOCUMENTATION"
+      },
+      "items": [
+        {
+          "card": {
+            "cardType": "text",
+            "text": "# NGINX Ingress Controller\nThe Ingress Controller is an application that runs in a cluster and configures an HTTP load balancer according to Ingress resources. The load balancer can be a software load balancer running in the cluster or a hardware or cloud load balancer running externally. Different load balancers require different Ingress Controller implementations.\n\nIn the case of NGINX, the Ingress Controller is deployed in a pod along with the load balancer.",
+            "title": "Text"
+          },
+          "layout": {
+            "h": 14,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "card": {
+            "cardType": "text",
+            "text": "# Notes\nFor resource consumption of the pod, use the CAdvisor Container Metrics board. Ingress-specific metrics for request latency, response latency, and upstream latency that can be found on the ingress resources.\n\nFrom here you can GraphLink to:\n* Ingress Logs\n* Container Logs\n* Cluster",
+            "title": "Text"
+          },
+          "layout": {
+            "h": 14,
+            "w": 6,
+            "x": 6,
+            "y": 0
+          }
+        }
+      ]
+    }
+  ]
+}
