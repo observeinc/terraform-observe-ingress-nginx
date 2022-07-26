@@ -16,6 +16,22 @@ module "ingress_nginx" {
 }
 ```
 
+## Exposing Metrics
+
+In order to expose the Ingress Nginx metrics, we need to create an override for the default Observe manifests on your kubernetes cluster.  This can accomplished by simply running:
+
+```
+echo "PROM_SCRAPE_POD_NAMESPACE_DROP_REGEX=(.*istio.*|kube-system)" >> example.env
+kubectl create configmap -n observe env-overrides --from-env-file example.env
+```
+
+You must restart pods to pick up the new environment variables:
+
+```
+kubectl rollout restart -n observe daemonset
+kubectl rollout restart -n observe deployment
+```
+
 ## Log formats
 
 The current `ingress-nginx` [log format](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/log-format/) is defined as follows:
