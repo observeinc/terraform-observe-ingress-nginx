@@ -119,8 +119,6 @@ No modules.
 
 | Name | Type |
 |------|------|
-| observe_board.ingress | resource |
-| observe_board.pod | resource |
 | observe_dataset.ingress_logs | resource |
 | observe_dataset.metrics | resource |
 | observe_link.ingress_logs | resource |

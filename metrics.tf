@@ -147,33 +147,3 @@ resource "observe_link" "metrics" {
     }
   ) : {}
 }
-
-
-resource "observe_board" "ingress" {
-  count   = var.enable_nginx_ingress_metrics ? 1 : 0
-  dataset = var.kubernetes.ingress.oid
-  name    = "Nginx Ingress Monitoring"
-  type    = "set"
-
-  json = templatefile("${path.module}/boards/nginxIngressBoard.json", {
-    dataset_kubernetes_cluster   = regexall(":([^/:]*)(/|$)", var.kubernetes.cluster.oid)[0][0]     # extract id from oid
-    dataset_kubernetes_ingress   = regexall(":([^/:]*)(/|$)", var.kubernetes.ingress.oid)[0][0]     # extract id from oid
-    dataset_kubernetes_namespace = regexall(":([^/:]*)(/|$)", var.kubernetes.namespace.oid)[0][0]   # extract id from oid
-    ingress_nginxIngressMetrics  = regexall(":([^/:]*)(/|$)", observe_dataset.metrics[0].oid)[0][0] # extract id from oid
-  })
-}
-
-resource "observe_board" "pod" {
-  count   = var.enable_nginx_ingress_metrics ? 1 : 0
-  dataset = var.kubernetes.pod.oid
-  name    = "NGINX Ingress Controller Monitoring"
-  type    = "set"
-
-  json = templatefile("${path.module}/boards/nginxIngressPodBoard.json", {
-    dataset_kubernetes_cluster                = regexall(":([^/:]*)(/|$)", var.kubernetes.cluster.oid)[0][0]     # extract id from oid
-    dataset_kubernetes_pod                    = regexall(":([^/:]*)(/|$)", var.kubernetes.pod.oid)[0][0]         # extract id from oid
-    dataset_kubernetes_namespace              = regexall(":([^/:]*)(/|$)", var.kubernetes.namespace.oid)[0][0]   # extract id from oid
-    dataset_nginx-ingress_nginxIngressMetrics = regexall(":([^/:]*)(/|$)", observe_dataset.metrics[0].oid)[0][0] # extract id from oid
-    dataset_prometheus_podMetrics             = regexall(":([^/:]*)(/|$)", var.pod_metrics.metrics.oid)[0][0]    # extract id from oid
-  })
-}
