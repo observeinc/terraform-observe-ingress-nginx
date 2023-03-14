@@ -1,6 +1,18 @@
 locals {
   latest_version = var.log_format == "latest"
   legacy_version = var.log_format == "<0.26.0"
+
+  # dashboards
+  workspace                                  = var.workspace.oid
+  dashboard_name_nginx_plus_upstream_traffic = format(var.name_format, "Upstream Traffic")
+  ingress                                    = var.kubernetes.ingress.id
+  pod                                        = var.kubernetes.pod.id
+  service                                    = var.kubernetes.service.id
+  node                                       = var.kubernetes.node.id
+  nginx_ingress_metrics                      = observe_dataset.metrics[0].id
+  api_update                                 = var.kubernetes.api_update.id
+  object                                     = var.kubernetes.object.id
+  pod_update                                 = var.kubernetes.pod_update.id
 }
 
 resource "observe_dataset" "ingress_logs" {

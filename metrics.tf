@@ -53,12 +53,15 @@ resource "observe_dataset" "metrics" {
       filter starts_with(metric, "nginx_")
 
       make_col 
-        exported_namespace: string(labels.exported_namespace),
-        controller_namespace:string(labels.controller_namespace),
-        controller_pod:string(labels.controller_pod),
         status:string(labels.status),
         state:string(labels.state),
-        ingress:string(labels.ingress)
+        ingress:coalesce(
+          string(labels.ingress), 
+          if(labels.resource_type="ingress", 
+            string(labels.resource_name), 
+            string_null()
+          )
+        )
     EOF
   }
 
@@ -81,7 +84,7 @@ resource "observe_dataset" "metrics" {
           response_latency_seconds:avg(response_latency_seconds),
           upstream_latency_count:avg(upstream_latency_count),
           upstream_latency_seconds:avg(upstream_latency_seconds),
-          group_by(clusterUid, namespace, ingress, pod, node, container, exported_namespace, controller_pod, controller_namespace, labels)
+          group_by(clusterUid, namespace, ingress, pod, node, container, labels)
       
       make_event
 
@@ -106,9 +109,6 @@ resource "observe_dataset" "metrics" {
         namespace,
         clusterUid,
         labels,
-        exported_namespace,
-        controller_namespace,
-        controller_pod,
         ingress
           
     EOF
@@ -119,7 +119,16 @@ resource "observe_dataset" "metrics" {
 
     pipeline = <<-EOF
       union @request_latency
-
+      %{if var.nginx_plus}
+      // parse upstream from nginxplus metrics
+      make_col 
+        upstream:string(labels.upstream),
+        upstream_namespace:string(labels.resource_namespace),
+        upstream_pod_ip:split_part(string(labels.server), ":", 1),
+        upstream_pod_name:string(labels.pod_name),
+        upstream_service:string(labels.service),
+        upstream_port:right(string(labels.upstream), strlen(split_part(string(labels.upstream), "-", -1)))
+      %{endif}
       interface "metric", metric:metric, value:value
 
       ${join("\n\n", [for metric, options in local.nginx_metrics : indent(2, format("set_metric options(\n%s\n), %q", join(",\n", [for k, v in options : format("%s: %q", k, v)]), metric))])}
@@ -135,15 +144,26 @@ resource "observe_link" "metrics" {
   fields    = each.value.fields
   label     = each.key
 
-  for_each = var.enable_nginx_ingress_metrics ? merge({
-    "Ingress" = {
-      target = var.kubernetes.ingress.oid
-      fields = ["ingress:name", "exported_namespace:namespace", "clusterUid"]
-    },
-    "Pod" = {
-      target = var.kubernetes.pod.oid
-      fields = ["controller_pod:name", "controller_namespace:namespace", "clusterUid"]
-    }
-    }
-  ) : {}
+  for_each = merge(
+    var.enable_nginx_ingress_metrics ? {
+      "Ingress" = {
+        target = var.kubernetes.ingress.oid
+        fields = ["ingress:name", "namespace", "clusterUid"]
+      },
+      "Pod" = {
+        target = var.kubernetes.pod.oid
+        fields = ["pod:name", "namespace", "clusterUid"]
+      }
+    } : {},
+    var.nginx_plus && var.enable_nginx_ingress_metrics ? {
+      "Upstream Pod" = {
+        target = var.kubernetes.pod.oid
+        fields = ["upstream_pod_name:name", "upstream_namespace:namespace", "clusterUid"]
+      },
+      "Upstream Service" = {
+        target = var.kubernetes.service.oid
+        fields = ["upstream_service:name", "namespace", "clusterUid"]
+      }
+    } : {}
+  )
 }

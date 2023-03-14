@@ -42,15 +42,19 @@ variable "enable_nginx_ingress_metrics" {
   default     = true
 }
 
-
 variable "kubernetes" {
   type = object({
-    container_logs = object({ oid = string })
-    endpoint       = object({ oid = string })
-    ingress        = object({ oid = string })
-    pod            = object({ oid = string })
-    namespace      = object({ oid = string })
-    cluster        = object({ oid = string })
+    container_logs = object({ oid = string, id = string })
+    endpoint       = object({ oid = string, id = string })
+    ingress        = object({ oid = string, id = string })
+    pod            = object({ oid = string, id = string })
+    namespace      = object({ oid = string, id = string })
+    cluster        = object({ oid = string, id = string })
+    service        = object({ oid = string, id = string })
+    node           = object({ oid = string, id = string })
+    api_update     = object({ oid = string, id = string })
+    object         = object({ oid = string, id = string })
+    pod_update     = object({ oid = string, id = string })
   })
   description = "Kubernetes module."
 }
@@ -62,7 +66,6 @@ variable "pod_metrics" {
   description = "Prometheus pod metrics module."
 }
 
-
 variable "link_targets" {
   description = "Datasets to link to."
   type = map(object({
@@ -70,4 +73,10 @@ variable "link_targets" {
     fields = list(string)
   }))
   default = {}
+}
+
+variable "nginx_plus" {
+  description = "Model metrics from NGINX Plus ingress controller."
+  type        = bool
+  default     = false
 }
