@@ -1461,10 +1461,7 @@ resource "observe_dashboard" "upstream_traffic" {
               isPinned = false
               opal = [
                 "exists ingress=@ingress.name, namespace=@ingress.namespace, clusterUid=@ingress.clusterUid",
-                "exists upstream_pod_name=@pod.name, namespace=@pod.namespace, clusterUid=@pod.clusterUid",
-                "lookup",
-                "\tupstream_pod_name=@pod.name,",
-                " \tupstream_node:@pod.nodeName",
+                "exists upstream_pod=@pod.name, namespace=@pod.namespace, clusterUid=@pod.clusterUid",
                 "exists upstream_node=@node.name, clusterUid=@node.clusterUid",
                 "exists upstream_service=@service.name, namespace=@service.namespace, clusterUid=@service.clusterUid",
               ]
@@ -1488,10 +1485,7 @@ resource "observe_dashboard" "upstream_traffic" {
         params   = null
         pipeline = <<-EOT
                     exists ingress=@ingress.name, namespace=@ingress.namespace, clusterUid=@ingress.clusterUid
-                    exists upstream_pod_name=@pod.name, namespace=@pod.namespace, clusterUid=@pod.clusterUid
-                    lookup
-                    	upstream_pod_name=@pod.name,
-                     	upstream_node:@pod.nodeName
+                    exists upstream_pod=@pod.name, namespace=@pod.namespace, clusterUid=@pod.clusterUid
                     exists upstream_node=@node.name, clusterUid=@node.clusterUid
                     exists upstream_service=@service.name, namespace=@service.namespace, clusterUid=@service.clusterUid
                 EOT
@@ -3433,7 +3427,7 @@ resource "observe_dashboard" "upstream_traffic" {
               "1" = "upstream_service"
               "2" = "namespace"
               "3" = "clusterUid"
-              "4" = "upstream_pod_name"
+              "4" = "upstream_pod"
               "5" = "upstream_namespace"
               "6" = "_c_valid_from"
               "7" = "_c_valid_to"
@@ -3522,7 +3516,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         "clusterUid",
                       ],
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -3658,7 +3652,7 @@ resource "observe_dashboard" "upstream_traffic" {
                                   "clusterUid",
                                 ],
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -3692,7 +3686,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             "clusterUid",
                           ],
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -3741,7 +3735,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_vjyxeis7:rate(value), group_by(code, upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)",
+                "timechart options(empty_bins:true), value_rate_vjyxeis7:rate(value), group_by(code, upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -3775,7 +3769,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     filter in(code, "1xx", "2xx", "3xx")
                     // filter in(code, "2xx")
                     
-                    timechart options(empty_bins:true), value_rate_vjyxeis7:rate(value), group_by(code, upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)
+                    timechart options(empty_bins:true), value_rate_vjyxeis7:rate(value), group_by(code, upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)
                 EOT
       },
       {
@@ -3799,7 +3793,7 @@ resource "observe_dashboard" "upstream_traffic" {
               "0" = "upstream_service"
               "1" = "namespace"
               "2" = "clusterUid"
-              "3" = "upstream_pod_name"
+              "3" = "upstream_pod"
               "4" = "upstream_namespace"
               "5" = "_c_valid_from"
               "6" = "_c_valid_to"
@@ -3887,7 +3881,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         "clusterUid",
                       ],
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -4016,7 +4010,7 @@ resource "observe_dashboard" "upstream_traffic" {
                                   "clusterUid",
                                 ],
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -4049,7 +4043,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             "clusterUid",
                           ],
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -4098,7 +4092,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_bqzz1qcc:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)",
+                "timechart options(empty_bins:true), value_rate_bqzz1qcc:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -4125,7 +4119,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     make_col code:string(labels.code)
                     filter code = "4xx" 
                     
-                    timechart options(empty_bins:true), value_rate_bqzz1qcc:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)
+                    timechart options(empty_bins:true), value_rate_bqzz1qcc:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)
                 EOT
       },
       {
@@ -4149,7 +4143,7 @@ resource "observe_dashboard" "upstream_traffic" {
               "0" = "upstream_service"
               "1" = "namespace"
               "2" = "clusterUid"
-              "3" = "upstream_pod_name"
+              "3" = "upstream_pod"
               "4" = "upstream_namespace"
               "5" = "_c_valid_from"
               "6" = "_c_valid_to"
@@ -4237,7 +4231,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         "clusterUid",
                       ],
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -4366,7 +4360,7 @@ resource "observe_dashboard" "upstream_traffic" {
                                   "clusterUid",
                                 ],
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -4399,7 +4393,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             "clusterUid",
                           ],
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -4448,7 +4442,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_hdrwyfxe:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)",
+                "timechart options(empty_bins:true), value_rate_hdrwyfxe:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -4475,7 +4469,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     make_col code:string(labels.code)
                     filter code = "5xx" 
                     
-                    timechart options(empty_bins:true), value_rate_hdrwyfxe:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)
+                    timechart options(empty_bins:true), value_rate_hdrwyfxe:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)
                 EOT
       },
       {
@@ -4499,7 +4493,7 @@ resource "observe_dashboard" "upstream_traffic" {
               "0" = "upstream_service"
               "1" = "namespace"
               "2" = "clusterUid"
-              "3" = "upstream_pod_name"
+              "3" = "upstream_pod"
               "4" = "upstream_namespace"
               "5" = "_c_valid_from"
               "6" = "_c_valid_to"
@@ -4590,7 +4584,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         "clusterUid",
                       ],
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -4718,7 +4712,7 @@ resource "observe_dashboard" "upstream_traffic" {
                                   "clusterUid",
                                 ],
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -4751,7 +4745,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             "clusterUid",
                           ],
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -4800,7 +4794,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_oe096hf8:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)",
+                "timechart options(empty_bins:true), value_rate_oe096hf8:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -4823,7 +4817,7 @@ resource "observe_dashboard" "upstream_traffic" {
         pipeline = <<-EOT
                     // filter starts_with(metric, "nginx_ingress_nginxplus_upstream_server_")
                     filter metric = "nginx_ingress_nginxplus_upstream_server_requests" 
-                    timechart options(empty_bins:true), value_rate_oe096hf8:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)
+                    timechart options(empty_bins:true), value_rate_oe096hf8:rate(value), group_by(upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)
                 EOT
       },
       {
@@ -4847,7 +4841,7 @@ resource "observe_dashboard" "upstream_traffic" {
               "0" = "upstream_service"
               "1" = "namespace"
               "2" = "clusterUid"
-              "3" = "upstream_pod_name"
+              "3" = "upstream_pod"
               "4" = "upstream_namespace"
               "5" = "_c_valid_from"
               "6" = "_c_valid_to"
@@ -4936,7 +4930,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         "clusterUid",
                       ],
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -5062,7 +5056,7 @@ resource "observe_dashboard" "upstream_traffic" {
                                   "clusterUid",
                                 ],
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -5094,7 +5088,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             "clusterUid",
                           ],
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -5142,7 +5136,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_avg_8mio67de:avg(value), group_by(upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)",
+                "timechart options(empty_bins:true), value_avg_8mio67de:avg(value), group_by(upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -5166,7 +5160,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     // filter starts_with(metric, "nginx_ingress_nginxplus_upstream_server_")
                     // make_col metric:split_part(metric, "nginx_ingress_nginxplus_upstream_server_", 2)
                     filter metric = "nginx_ingress_nginxplus_upstream_server_response_time" 
-                    timechart options(empty_bins:true), value_avg_8mio67de:avg(value), group_by(upstream_service, namespace, clusterUid, upstream_pod_name, upstream_namespace)
+                    timechart options(empty_bins:true), value_avg_8mio67de:avg(value), group_by(upstream_service, namespace, clusterUid, upstream_pod, upstream_namespace)
                 EOT
       },
       {
@@ -5280,7 +5274,10 @@ resource "observe_dashboard" "upstream_traffic" {
                 source = {
                   table = {
                     groupFields = [
-                      "upstream_node",
+                      [
+                        "upstream_node",
+                        "clusterUid",
+                      ],
                     ]
                     statsBy = {
                       fn = "avg"
@@ -5367,9 +5364,6 @@ resource "observe_dashboard" "upstream_traffic" {
                 "filter metric = \"nginx_ingress_nginxplus_upstream_server_responses\"",
                 "make_col code:string(labels.code)",
                 "filter code = \"4xx\" ",
-                "lookup ",
-                "\tupstream_pod_name = @pod.name,",
-                " \tupstream_node:@pod.nodeName",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -5402,7 +5396,10 @@ resource "observe_dashboard" "upstream_traffic" {
                           source = {
                             table = {
                               groupFields = [
-                                "upstream_node",
+                                [
+                                  "upstream_node",
+                                  "clusterUid",
+                                ],
                               ]
                               statsBy = {
                                 fn = "avg"
@@ -5426,7 +5423,10 @@ resource "observe_dashboard" "upstream_traffic" {
                         }
                         filterActions = []
                         groupBy = [
-                          "upstream_node",
+                          [
+                            "upstream_node",
+                            "clusterUid",
+                          ],
                         ]
                         id                  = "datasetQueryExpression-l0b2zrnj"
                         lookupActions       = []
@@ -5472,7 +5472,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_9wzf56fx:rate(value), group_by(upstream_node)",
+                "timechart options(empty_bins:true), value_rate_9wzf56fx:rate(value), group_by(upstream_node, clusterUid)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -5498,10 +5498,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     filter metric = "nginx_ingress_nginxplus_upstream_server_responses"
                     make_col code:string(labels.code)
                     filter code = "4xx" 
-                    lookup 
-                    	upstream_pod_name = @pod.name,
-                     	upstream_node:@pod.nodeName
-                    timechart options(empty_bins:true), value_rate_9wzf56fx:rate(value), group_by(upstream_node)
+                    timechart options(empty_bins:true), value_rate_9wzf56fx:rate(value), group_by(upstream_node, clusterUid)
                 EOT
       },
       {
@@ -5855,7 +5852,7 @@ resource "observe_dashboard" "upstream_traffic" {
             columnFooterHeight = 0
             columnHeaderHeight = 29
             columnOrderOverride = {
-              "0" = "upstream_pod_name"
+              "0" = "upstream_pod"
               "1" = "upstream_namespace"
               "2" = "clusterUid"
               "3" = "_c_valid_from"
@@ -5939,7 +5936,7 @@ resource "observe_dashboard" "upstream_traffic" {
                   table = {
                     groupFields = [
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -6063,7 +6060,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             table = {
                               groupFields = [
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -6091,7 +6088,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         filterActions = []
                         groupBy = [
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -6140,7 +6137,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_4opz0h8b:rate(value), group_by(upstream_pod_name, upstream_namespace, clusterUid)",
+                "timechart options(empty_bins:true), value_rate_4opz0h8b:rate(value), group_by(upstream_pod, upstream_namespace, clusterUid)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -6167,7 +6164,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     make_col code:string(labels.code)
                     filter code = "4xx" 
                     
-                    timechart options(empty_bins:true), value_rate_4opz0h8b:rate(value), group_by(upstream_pod_name, upstream_namespace, clusterUid)
+                    timechart options(empty_bins:true), value_rate_4opz0h8b:rate(value), group_by(upstream_pod, upstream_namespace, clusterUid)
                 EOT
       },
       {
@@ -6281,7 +6278,10 @@ resource "observe_dashboard" "upstream_traffic" {
                 source = {
                   table = {
                     groupFields = [
-                      "upstream_node",
+                      [
+                        "upstream_node",
+                        "clusterUid",
+                      ],
                     ]
                     statsBy = {
                       fn = "avg"
@@ -6368,9 +6368,6 @@ resource "observe_dashboard" "upstream_traffic" {
                 "filter metric = \"nginx_ingress_nginxplus_upstream_server_responses\"",
                 "make_col code:string(labels.code)",
                 "filter code = \"5xx\" ",
-                "lookup ",
-                "\tupstream_pod_name = @pod.name,",
-                " \tupstream_node:@pod.nodeName",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -6403,7 +6400,10 @@ resource "observe_dashboard" "upstream_traffic" {
                           source = {
                             table = {
                               groupFields = [
-                                "upstream_node",
+                                [
+                                  "upstream_node",
+                                  "clusterUid",
+                                ],
                               ]
                               statsBy = {
                                 fn = "avg"
@@ -6427,7 +6427,10 @@ resource "observe_dashboard" "upstream_traffic" {
                         }
                         filterActions = []
                         groupBy = [
-                          "upstream_node",
+                          [
+                            "upstream_node",
+                            "clusterUid",
+                          ],
                         ]
                         id                  = "datasetQueryExpression-cyrwh4fc"
                         lookupActions       = []
@@ -6473,7 +6476,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_74v9htob:rate(value), group_by(upstream_node)",
+                "timechart options(empty_bins:true), value_rate_74v9htob:rate(value), group_by(upstream_node, clusterUid)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -6499,10 +6502,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     filter metric = "nginx_ingress_nginxplus_upstream_server_responses"
                     make_col code:string(labels.code)
                     filter code = "5xx" 
-                    lookup 
-                    	upstream_pod_name = @pod.name,
-                     	upstream_node:@pod.nodeName
-                    timechart options(empty_bins:true), value_rate_74v9htob:rate(value), group_by(upstream_node)
+                    timechart options(empty_bins:true), value_rate_74v9htob:rate(value), group_by(upstream_node, clusterUid)
                 EOT
       },
       {
@@ -6856,7 +6856,7 @@ resource "observe_dashboard" "upstream_traffic" {
             columnFooterHeight = 0
             columnHeaderHeight = 29
             columnOrderOverride = {
-              "0" = "upstream_pod_name"
+              "0" = "upstream_pod"
               "1" = "upstream_namespace"
               "2" = "clusterUid"
               "3" = "_c_valid_from"
@@ -6940,7 +6940,7 @@ resource "observe_dashboard" "upstream_traffic" {
                   table = {
                     groupFields = [
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -7064,7 +7064,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             table = {
                               groupFields = [
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -7092,7 +7092,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         filterActions = []
                         groupBy = [
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -7141,7 +7141,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_18xxmfcs:rate(value), group_by(upstream_pod_name, upstream_namespace, clusterUid)",
+                "timechart options(empty_bins:true), value_rate_18xxmfcs:rate(value), group_by(upstream_pod, upstream_namespace, clusterUid)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -7168,7 +7168,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     make_col code:string(labels.code)
                     filter code = "5xx" 
                     
-                    timechart options(empty_bins:true), value_rate_18xxmfcs:rate(value), group_by(upstream_pod_name, upstream_namespace, clusterUid)
+                    timechart options(empty_bins:true), value_rate_18xxmfcs:rate(value), group_by(upstream_pod, upstream_namespace, clusterUid)
                 EOT
       },
       {
@@ -7282,7 +7282,10 @@ resource "observe_dashboard" "upstream_traffic" {
                 source = {
                   table = {
                     groupFields = [
-                      "upstream_node",
+                      [
+                        "upstream_node",
+                        "clusterUid",
+                      ],
                     ]
                     statsBy = {
                       fn = "avg"
@@ -7380,9 +7383,6 @@ resource "observe_dashboard" "upstream_traffic" {
               opal = [
                 "// filter starts_with(metric, \"nginx_ingress_nginxplus_upstream_server_\")",
                 "filter metric = \"nginx_ingress_nginxplus_upstream_server_requests\" ",
-                "lookup ",
-                "\tupstream_pod_name = @pod.name,",
-                " \tupstream_node:@pod.nodeName",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -7415,7 +7415,10 @@ resource "observe_dashboard" "upstream_traffic" {
                           source = {
                             table = {
                               groupFields = [
-                                "upstream_node",
+                                [
+                                  "upstream_node",
+                                  "clusterUid",
+                                ],
                               ]
                               statsBy = {
                                 fn = "avg"
@@ -7439,7 +7442,10 @@ resource "observe_dashboard" "upstream_traffic" {
                         }
                         filterActions = []
                         groupBy = [
-                          "upstream_node",
+                          [
+                            "upstream_node",
+                            "clusterUid",
+                          ],
                         ]
                         id                  = "datasetQueryExpression-gx3kzxy4"
                         lookupActions       = []
@@ -7485,7 +7491,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_agsvsmhw:rate(value), group_by(upstream_node)",
+                "timechart options(empty_bins:true), value_rate_agsvsmhw:rate(value), group_by(upstream_node, clusterUid)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -7508,10 +7514,7 @@ resource "observe_dashboard" "upstream_traffic" {
         pipeline = <<-EOT
                     // filter starts_with(metric, "nginx_ingress_nginxplus_upstream_server_")
                     filter metric = "nginx_ingress_nginxplus_upstream_server_requests" 
-                    lookup 
-                    	upstream_pod_name = @pod.name,
-                     	upstream_node:@pod.nodeName
-                    timechart options(empty_bins:true), value_rate_agsvsmhw:rate(value), group_by(upstream_node)
+                    timechart options(empty_bins:true), value_rate_agsvsmhw:rate(value), group_by(upstream_node, clusterUid)
                 EOT
       },
       {
@@ -7893,7 +7896,7 @@ resource "observe_dashboard" "upstream_traffic" {
             columnFooterHeight = 0
             columnHeaderHeight = 29
             columnOrderOverride = {
-              "0" = "upstream_pod_name"
+              "0" = "upstream_pod"
               "1" = "upstream_namespace"
               "2" = "clusterUid"
               "3" = "_c_valid_from"
@@ -7983,7 +7986,7 @@ resource "observe_dashboard" "upstream_traffic" {
                   table = {
                     groupFields = [
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -8118,7 +8121,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             table = {
                               groupFields = [
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -8146,7 +8149,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         filterActions = []
                         groupBy = [
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -8195,7 +8198,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_rate_ajm31s6o:rate(value), group_by(upstream_pod_name, upstream_namespace, clusterUid)",
+                "timechart options(empty_bins:true), value_rate_ajm31s6o:rate(value), group_by(upstream_pod, upstream_namespace, clusterUid)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -8219,7 +8222,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     // filter starts_with(metric, "nginx_ingress_nginxplus_upstream_server_")
                     filter metric = "nginx_ingress_nginxplus_upstream_server_requests" 
                     
-                    timechart options(empty_bins:true), value_rate_ajm31s6o:rate(value), group_by(upstream_pod_name, upstream_namespace, clusterUid)
+                    timechart options(empty_bins:true), value_rate_ajm31s6o:rate(value), group_by(upstream_pod, upstream_namespace, clusterUid)
                 EOT
       },
       {
@@ -8334,7 +8337,10 @@ resource "observe_dashboard" "upstream_traffic" {
                 source = {
                   table = {
                     groupFields = [
-                      "upstream_node",
+                      [
+                        "upstream_node",
+                        "clusterUid",
+                      ],
                     ]
                     statsBy = {
                       fn = "avg"
@@ -8432,9 +8438,6 @@ resource "observe_dashboard" "upstream_traffic" {
                 "// filter starts_with(metric, \"nginx_ingress_nginxplus_upstream_server_\")",
                 "// make_col metric:split_part(metric, \"nginx_ingress_nginxplus_upstream_server_\", 2)",
                 "filter metric = \"nginx_ingress_nginxplus_upstream_server_response_time\" ",
-                "lookup ",
-                "\tupstream_pod_name = @pod.name,",
-                " \tupstream_node:@pod.nodeName",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -8468,7 +8471,10 @@ resource "observe_dashboard" "upstream_traffic" {
                           source = {
                             table = {
                               groupFields = [
-                                "upstream_node",
+                                [
+                                  "upstream_node",
+                                  "clusterUid",
+                                ],
                               ]
                               statsBy = {
                                 fn = "avg"
@@ -8491,7 +8497,10 @@ resource "observe_dashboard" "upstream_traffic" {
                         }
                         filterActions = []
                         groupBy = [
-                          "upstream_node",
+                          [
+                            "upstream_node",
+                            "clusterUid",
+                          ],
                         ]
                         id              = "datasetQueryExpression-bamfas6e"
                         lookupActions   = []
@@ -8536,7 +8545,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_avg_2l8bigrv:avg(value), group_by(upstream_node)",
+                "timechart options(empty_bins:true), value_avg_2l8bigrv:avg(value), group_by(upstream_node, clusterUid)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -8560,10 +8569,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     // filter starts_with(metric, "nginx_ingress_nginxplus_upstream_server_")
                     // make_col metric:split_part(metric, "nginx_ingress_nginxplus_upstream_server_", 2)
                     filter metric = "nginx_ingress_nginxplus_upstream_server_response_time" 
-                    lookup 
-                    	upstream_pod_name = @pod.name,
-                     	upstream_node:@pod.nodeName
-                    timechart options(empty_bins:true), value_avg_2l8bigrv:avg(value), group_by(upstream_node)
+                    timechart options(empty_bins:true), value_avg_2l8bigrv:avg(value), group_by(upstream_node, clusterUid)
                 EOT
       },
       {
@@ -8951,7 +8957,7 @@ resource "observe_dashboard" "upstream_traffic" {
             columnFooterHeight = 0
             columnHeaderHeight = 29
             columnOrderOverride = {
-              "0" = "upstream_pod_name"
+              "0" = "upstream_pod"
               "1" = "upstream_namespace"
               "2" = "clusterUid"
               "3" = "_c_valid_from"
@@ -9048,7 +9054,7 @@ resource "observe_dashboard" "upstream_traffic" {
                   table = {
                     groupFields = [
                       [
-                        "upstream_pod_name",
+                        "upstream_pod",
                         "upstream_namespace",
                         "clusterUid",
                       ],
@@ -9184,7 +9190,7 @@ resource "observe_dashboard" "upstream_traffic" {
                             table = {
                               groupFields = [
                                 [
-                                  "upstream_pod_name",
+                                  "upstream_pod",
                                   "upstream_namespace",
                                   "clusterUid",
                                 ],
@@ -9211,7 +9217,7 @@ resource "observe_dashboard" "upstream_traffic" {
                         filterActions = []
                         groupBy = [
                           [
-                            "upstream_pod_name",
+                            "upstream_pod",
                             "upstream_namespace",
                             "clusterUid",
                           ],
@@ -9259,7 +9265,7 @@ resource "observe_dashboard" "upstream_traffic" {
               index    = 2
               isPinned = false
               opal = [
-                "timechart options(empty_bins:true), value_avg_t4whg1l9:avg(value), group_by(upstream_pod_name, upstream_namespace, clusterUid)",
+                "timechart options(empty_bins:true), value_avg_t4whg1l9:avg(value), group_by(upstream_pod, upstream_namespace, clusterUid)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -9284,7 +9290,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     // make_col metric:split_part(metric, "nginx_ingress_nginxplus_upstream_server_", 2)
                     filter metric = "nginx_ingress_nginxplus_upstream_server_response_time" 
                     
-                    timechart options(empty_bins:true), value_avg_t4whg1l9:avg(value), group_by(upstream_pod_name, upstream_namespace, clusterUid)
+                    timechart options(empty_bins:true), value_avg_t4whg1l9:avg(value), group_by(upstream_pod, upstream_namespace, clusterUid)
                 EOT
       },
       {
@@ -9438,7 +9444,7 @@ resource "observe_dashboard" "upstream_traffic" {
               isPinned = false
               opal = [
                 "filter metric = \"nginx_ingress_nginxplus_upstream_server_requests\"",
-                "statsby group_by(upstream, upstream_node, upstream_service, upstream_pod_name, upstream_namespace)",
+                "statsby group_by(upstream, upstream_node, upstream_service, upstream_pod, upstream_namespace)",
               ]
               queryPresentation = {}
               type              = "unknown"
@@ -9460,7 +9466,7 @@ resource "observe_dashboard" "upstream_traffic" {
         params   = null
         pipeline = <<-EOT
                     filter metric = "nginx_ingress_nginxplus_upstream_server_requests"
-                    statsby group_by(upstream, upstream_node, upstream_service, upstream_pod_name, upstream_namespace)
+                    statsby group_by(upstream, upstream_node, upstream_service, upstream_pod, upstream_namespace)
                 EOT
       },
       {
@@ -9677,7 +9683,7 @@ resource "observe_dashboard" "upstream_traffic" {
                 "// exists namespace=@upstream_assets.upstream_namespace",
                 "exists name=@upstream_assets.upstream_node ",
                 "\tor name=@upstream_assets.upstream_service ",
-                " \tor name=@upstream_assets.upstream_pod_name",
+                " \tor name=@upstream_assets.upstream_pod",
                 "lookup uid=@object.uid,",
                 "\tobject_kind:@object.kind",
                 "// filter kind=$api_update_kind or $api_update_kind=string_null()",
@@ -9758,7 +9764,7 @@ resource "observe_dashboard" "upstream_traffic" {
                     // exists namespace=@upstream_assets.upstream_namespace
                     exists name=@upstream_assets.upstream_node 
                     	or name=@upstream_assets.upstream_service 
-                     	or name=@upstream_assets.upstream_pod_name
+                     	or name=@upstream_assets.upstream_pod
                     lookup uid=@object.uid,
                     	object_kind:@object.kind
                     // filter kind=$api_update_kind or $api_update_kind=string_null()
@@ -10253,7 +10259,7 @@ resource "observe_dashboard" "upstream_traffic" {
               isPinned = false
               opal = [
                 "exists nodeName=@upstream_assets.upstream_node",
-                "\tand name=@upstream_assets.upstream_pod_name",
+                "\tand name=@upstream_assets.upstream_pod",
                 "/*",
                 "make_col",
                 "\told_status:window(lag(status, 1), group_by(name)),",
@@ -10302,7 +10308,7 @@ resource "observe_dashboard" "upstream_traffic" {
         params   = null
         pipeline = <<-EOT
                     exists nodeName=@upstream_assets.upstream_node
-                    	and name=@upstream_assets.upstream_pod_name
+                    	and name=@upstream_assets.upstream_pod
                     /*
                     make_col
                     	old_status:window(lag(status, 1), group_by(name)),
