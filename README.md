@@ -122,8 +122,14 @@ No modules.
 | observe_dashboard.upstream_traffic | resource |
 | observe_dataset.ingress_logs | resource |
 | observe_dataset.metrics | resource |
+| observe_dataset.upstream_node | resource |
+| observe_dataset.upstream_pod | resource |
+| observe_dataset.upstream_service | resource |
 | observe_link.ingress_logs | resource |
 | observe_link.metrics | resource |
+| observe_link.upstream_node | resource |
+| observe_link.upstream_pod | resource |
+| observe_link.upstream_service | resource |
 
 ## Inputs
 
@@ -146,6 +152,10 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_ingress_logs"></a> [ingress\_logs](#output\_ingress\_logs) | n/a |
+| <a name="output_metrics"></a> [metrics](#output\_metrics) | n/a |
+| <a name="output_upstream_node"></a> [upstream\_node](#output\_upstream\_node) | n/a |
+| <a name="output_upstream_pod"></a> [upstream\_pod](#output\_upstream\_pod) | n/a |
+| <a name="output_upstream_service"></a> [upstream\_service](#output\_upstream\_service) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## License

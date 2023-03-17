@@ -1,18 +1,21 @@
 locals {
-  latest_version = var.log_format == "latest"
-  legacy_version = var.log_format == "<0.26.0"
+  latest_version    = var.log_format == "latest"
+  legacy_version    = var.log_format == "<0.26.0"
+  enable_nginx_plus = var.nginx_plus && var.enable_nginx_ingress_metrics
 
-  # dashboards
-  workspace                                  = var.workspace.oid
+  # dashboard names
   dashboard_name_nginx_plus_upstream_traffic = format(var.name_format, "Upstream Traffic")
-  ingress                                    = var.kubernetes.ingress.id
-  pod                                        = var.kubernetes.pod.id
-  service                                    = var.kubernetes.service.id
-  node                                       = var.kubernetes.node.id
-  nginx_ingress_metrics                      = observe_dataset.metrics[0].id
-  api_update                                 = var.kubernetes.api_update.id
-  object                                     = var.kubernetes.object.id
-  pod_update                                 = var.kubernetes.pod_update.id
+
+  # dashboard locals
+  workspace             = var.workspace.oid
+  ingress               = var.kubernetes.ingress.id
+  pod                   = local.enable_nginx_plus ? observe_dataset.upstream_pod[0].id : "0"
+  service               = local.enable_nginx_plus ? observe_dataset.upstream_service[0].id : "0"
+  node                  = local.enable_nginx_plus ? observe_dataset.upstream_node[0].id : "0"
+  nginx_ingress_metrics = var.enable_nginx_ingress_metrics ? observe_dataset.metrics[0].id : "0"
+  api_update            = var.kubernetes.api_update.id
+  object                = var.kubernetes.object.id
+  pod_update            = var.kubernetes.pod_update.id
 }
 
 resource "observe_dataset" "ingress_logs" {

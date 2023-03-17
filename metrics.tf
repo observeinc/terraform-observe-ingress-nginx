@@ -42,12 +42,14 @@ resource "observe_dataset" "metrics" {
   name      = format(var.name_format, "Nginx Ingress Metrics")
   freshness = var.freshness_default
 
-  inputs = {
-    "pod_metrics" = var.pod_metrics.metrics.oid
-  }
+  inputs = merge(
+    { "pod_metrics" = var.pod_metrics.metrics.oid },
+    local.enable_nginx_plus ? { "pod" = var.kubernetes.pod.oid } : {}
+  )
 
   stage {
     alias = "filtered_metrics"
+    input = "pod_metrics"
 
     pipeline = <<-EOF
       filter starts_with(metric, "nginx_")
@@ -119,15 +121,18 @@ resource "observe_dataset" "metrics" {
 
     pipeline = <<-EOF
       union @request_latency
-      %{if var.nginx_plus}
+      %{if local.enable_nginx_plus}
       // parse upstream from nginxplus metrics
       make_col 
         upstream:string(labels.upstream),
         upstream_namespace:string(labels.resource_namespace),
         upstream_pod_ip:split_part(string(labels.server), ":", 1),
-        upstream_pod_name:string(labels.pod_name),
+        upstream_pod:string(labels.pod_name),
         upstream_service:string(labels.service),
         upstream_port:right(string(labels.upstream), strlen(split_part(string(labels.upstream), "-", -1)))
+      lookup 
+        upstream_pod = @pod.name,
+        upstream_node:@pod.nodeName
       %{endif}
       interface "metric", metric:metric, value:value
 
@@ -155,14 +160,18 @@ resource "observe_link" "metrics" {
         fields = ["pod:name", "namespace", "clusterUid"]
       }
     } : {},
-    var.nginx_plus && var.enable_nginx_ingress_metrics ? {
+    local.enable_nginx_plus ? {
       "Upstream Pod" = {
-        target = var.kubernetes.pod.oid
-        fields = ["upstream_pod_name:name", "upstream_namespace:namespace", "clusterUid"]
+        target = observe_dataset.upstream_pod[0].oid
+        fields = ["upstream_pod:name", "upstream_namespace:namespace", "clusterUid"]
       },
       "Upstream Service" = {
         target = var.kubernetes.service.oid
         fields = ["upstream_service:name", "namespace", "clusterUid"]
+      },
+      "Upstream Node" = {
+        target = var.kubernetes.node.oid
+        fields = ["upstream_node:name", "clusterUid"]
       }
     } : {}
   )
