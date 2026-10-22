@@ -245,7 +245,7 @@ resource "observe_dataset" "service" {
         type:string_null(),
         clusterIP:string_null(),
         clusterUid:string_null(),
-        ports:any_null(),
+        ports:array_null(),
         selector:object_null()
 
       make_resource
